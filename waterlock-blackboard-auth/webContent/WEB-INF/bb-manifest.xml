@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<manifest>
+  <!-- core extension information -->
+    <plugin>
+        <name value= "Waterlock Authentication Plugin"/>
+        <handle value= "waterlock-blackboard-auth"/>
+        <description value= "A plugin which allows users to sign into a Waterlock Module using an open Blackboard session."/>
+        <version value= "1.0.0"/>
+        <requires>
+            <bbversion value="9.0"/>
+        </requires>
+        <vendor>
+            <id value="syn"/>
+            <name value="GDP Group 18, ECS, University of Southampton"/>
+            <url value="http://www.soton.ac.uk" />
+            <description value="A group design project working on integrating the Synote service with Blackboard and Panopto" />
+        </vendor>
+        
+<!--    These two JSPs are displayed when the "remove" and "properties" buttons --> 
+<!--	are pressed on the Building Blocks administration page. 				-->
+<!--    <http-actions>
+            <config value="admin/configure.jsp"/>
+            <remove value="admin/remove.jsp"/>
+        </http-actions>
+ -->    
+        <http-actions><config value="Config.jsp"></config></http-actions><application-defs>
+            <application handle="waterlock-blackboard-auth" type="admin" name="Waterlock Authentication">
+                <description lang="en_US">Waterlock Authentication Tool</description>
+                <links>
+                    <link>
+                        <type value="tool"/>
+                        <name value="Waterlock Authentication tool"/>
+                        <url value="index.jsp" />
+                        <description value="The Tool for authentication of a waterlock session" />
+                    </link>
+                </links>
+            </application>
+        </application-defs>
+
+<!-- Portal Module Definitions -->
+        <module-defs>
+        </module-defs>
+<!--  Custom Content Types -->
+        <content-handlers>
+        </content-handlers>
+
+<!-- code permissions required for proper operation -->
+        <permissions>
+            <permission type="attribute" name="user.authinfo" actions="get"/>
+            <permission type="attribute" name="user.personalinfo" actions="get,set"/>
+        </permissions>
+
+    </plugin>
+
+</manifest>
