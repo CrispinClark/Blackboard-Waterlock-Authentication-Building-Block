@@ -74,10 +74,11 @@ public class Utils {
 		JWTSigner signer = new JWTSigner(pluginSettings.getSharedKey());
 		
 		LinkedHashMap<String, Object> responseClaims = new LinkedHashMap<String, Object>();
-		responseClaims.put("username", username);
+		responseClaims.put("blackboard_id", username);
+		responseClaims.put("username", pluginSettings.getProviderID() + "\\" + username);
 		responseClaims.put("provider", pluginSettings.getProviderID());
 		responseClaims.put("firstname", firstname);
-		responseClaims.put("surname", surname);
+		responseClaims.put("lastname", surname);
 		responseClaims.put("email", email);
 		
 		Options options = new Options();

@@ -55,7 +55,7 @@
 
 			User user = ctx.getUser();
 			
-			String username = Utils.decorateBlackboardUserName(user.getUserName());
+			String username = user.getUserName();
 			String firstname = user.getGivenName();
 			String surname = user.getFamilyName();
 			String email = user.getEmailAddress();
@@ -95,7 +95,7 @@
 			%> ERROR <%=s%><%
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			Utils.log(e, "IO Err");
+			Utils.log(e, "IO Error");
 			String s = Utils.getStackTrace(e);
 			%> E0R <%=s%><%
 		} catch (JWTVerifyException e) {
