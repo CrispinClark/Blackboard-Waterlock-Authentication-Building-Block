@@ -19,6 +19,7 @@ import com.auth0.jwt.JWTSigner.Options;
 
 import blackboard.platform.plugin.PlugInUtil;
 import gdp18.waterlock.Settings;
+import gdp18.waterlock.jwt.EditedJWTVerifier;
 
 public class Utils {
 	public static final Settings pluginSettings = new Settings();
@@ -58,26 +59,30 @@ public class Utils {
         {
         }
     }
-    public static void log(String logMessage)
-    {
+    public static void log(String logMessage){
         log(null, logMessage);
     }
     
-    public static String decorateBlackboardUserName(String bbUsername)
-	{
-		return pluginSettings.getProviderID() + "\\" + bbUsername; 
-	}
-    
+    /**
+     * Returns the String of a new JWT for Waterlock authentication. The signature and expiry
+     * seconds of the JWT are defined in Settings.
+     * @param username
+     * @param firstname
+     * @param surname
+     * @param email
+     * @return
+     */
     public static String generateResponseJWT(String username, String firstname, 
 			String surname, String email){
 
 		JWTSigner signer = new JWTSigner(pluginSettings.getSharedKey());
 		
 		LinkedHashMap<String, Object> responseClaims = new LinkedHashMap<String, Object>();
-		responseClaims.put("username", username);
 		responseClaims.put("provider", pluginSettings.getProviderID());
+		responseClaims.put("blackboard_id", username);
+		responseClaims.put("username", pluginSettings.getProviderID() + "\\" + username);
 		responseClaims.put("firstname", firstname);
-		responseClaims.put("surname", surname);
+		responseClaims.put("lastname", surname);
 		responseClaims.put("email", email);
 		
 		Options options = new Options();
@@ -86,10 +91,21 @@ public class Utils {
 		return signer.sign(responseClaims, options);
 	}
 
+    /**
+     * Validates an incoming JWT for this system and returns the payload of the JWT as a LinkedHashMap. 
+     * @param jsonWebTokenString
+     * @return
+     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException
+     * @throws IllegalStateException
+     * @throws SignatureException
+     * @throws IOException
+     * @throws JWTVerifyException
+     */
     public static LinkedHashMap<String, Object> validateIncomingWebToken(String jsonWebTokenString) 
 			throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, 
 			SignatureException, IOException, JWTVerifyException{
-		JWTVerifier verifier = new JWTVerifier(pluginSettings.getSharedKey());
+		EditedJWTVerifier verifier = new EditedJWTVerifier(pluginSettings.getSharedKey());
 		return (LinkedHashMap<String, Object>) verifier.verify(jsonWebTokenString);
 	}
 
@@ -100,4 +116,33 @@ public class Utils {
 		e.printStackTrace(pw);
 		return sw.toString();
 	}
+
+    public static boolean isValidXML(String str){
+    	return !(str.contains("<") | str.contains(">") | str.contains("&"));
+    }
+    
+    public static boolean isInteger(String str) {
+        if (str == null) {
+            return false;
+        }
+        int length = str.length();
+        if (length == 0) {
+            return false;
+        }
+        int i = 0;
+        if (str.charAt(0) == '-') {
+            if (length == 1) {
+                return false;
+            }
+            i = 1;
+        }
+        for (; i < length; i++) {
+            char c = str.charAt(i);
+            if (c < '0' || c > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
+    
 }

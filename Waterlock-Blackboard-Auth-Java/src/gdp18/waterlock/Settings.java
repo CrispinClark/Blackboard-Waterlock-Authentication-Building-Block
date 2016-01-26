@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.xml.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -98,6 +97,10 @@ public class Settings {
             Element sharedKeyElem = settingsDocument.createElement("sharedKey");
             sharedKeyElem.setAttribute("name", sharedKey);
             docElem.appendChild(sharedKeyElem);
+
+            Element expirySecondsElem = settingsDocument.createElement("expirySeconds");
+            expirySecondsElem.setAttribute("name", String.valueOf(jwtExpirySeconds));
+            docElem.appendChild(expirySecondsElem);
             
             File configDir = PlugInUtil.getConfigDirectory(Utils.vendorID, Utils.pluginHandle);
             File settingsFile = new File(configDir, "settings.xml");
@@ -138,6 +141,13 @@ public class Settings {
         {
             Element sharedKeyElem = (Element)sharedKeyNodes.item(0);
             this.sharedKey = sharedKeyElem.getAttribute("name");
+        }
+
+        NodeList expirySecondsNodes = docElem.getElementsByTagName("expirySeconds");
+        if(expirySecondsNodes.getLength() != 0)
+        {
+            Element expirySecondsElem = (Element)expirySecondsNodes.item(0);
+            this.jwtExpirySeconds = Integer.parseInt(expirySecondsElem.getAttribute("name"));
         }
     }
 }

@@ -21,15 +21,12 @@
 
 <bbData:context id="ctx">
 	<%
-		Utils.log("Someone has visited SSO.jsp");
+		Utils.log("Somebody visited SSO.jsp");
 	
 		String jwtString = request.getParameter("jwt");	
 	
-	/*	String action = request.getParameter("action");
-		boolean relogin = (action != null) && action.equals("relogin")/* && Utils.pluginSettings.getRefreshLogins();
-    */
 		BbSession bbSession = BbSessionManagerServiceFactory.getInstance().getSession(request);
-		if (!bbSession.isAuthenticated() || bbSession.getUserName().equals("guest")/* || relogin*/){
+		if (!bbSession.isAuthenticated() || bbSession.getUserName().equals("guest")){
 			String selfURL = request.getRequestURI()+"?jwt=" + jwtString;
 
 			String returnURL = URLEncoder.encode(selfURL, "UTF-8");
@@ -39,11 +36,7 @@
 			response.sendRedirect(loginURL);
 			return;
 		}
-		/*
-		// Reproduce canonically-ordered incoming auth payload.
-		String requestAuthPayload = "serverName=" + serverName + "&expiration=" + expiration;
-		*/
-		
+	
 		try 
 		{
 			%><%=jwtString %><%
@@ -52,10 +45,9 @@
 			
 			String serviceName = (String) decodedPayload.get("service_name");
 			String callbackURL = (String) decodedPayload.get("next");
-
 			User user = ctx.getUser();
 			
-			String username = Utils.decorateBlackboardUserName(user.getUserName());
+			String username = user.getUserName();
 			String firstname = user.getGivenName();
 			String surname = user.getFamilyName();
 			String email = user.getEmailAddress();
@@ -66,7 +58,6 @@
 			// Work around double-decoding bug coming from the Blackboard login page.
 			// Check for unescaped URL chars ':' '/' or '?' in ReturnUrl and re-escape if found.  
 			//callbackURL = Utils.checkAndEscapeTerminalUrlParam(callbackURL, "ReturnUrl");
-
 			String separator = (callbackURL.contains("?") ? "&" : "?");
 			String redirectURL = callbackURL + separator + "jwt=" + responseJWT;  
 			
@@ -95,7 +86,7 @@
 			%> ERROR <%=s%><%
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			Utils.log(e, "IO Err");
+			Utils.log(e, "IO Error");
 			String s = Utils.getStackTrace(e);
 			%> E0R <%=s%><%
 		} catch (JWTVerifyException e) {
@@ -104,5 +95,6 @@
 			String s = Utils.getStackTrace(e);
 			%> ERROR!!! <%=s%><%
 		}
+	
 	%>
 </bbData:context>

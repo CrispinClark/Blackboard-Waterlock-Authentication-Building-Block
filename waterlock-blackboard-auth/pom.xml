@@ -1,0 +1,102 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>southampton.ecs.gdp18</groupId>
+  <artifactId>waterlock-blackboard-auth-building-block</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>waterlock-blackboard-auth-building-block</name>
+  
+  <properties>
+  	<blackboard.platform-version>9.1</blackboard.platform-version>
+  	<bb-host>svm-tk1g11-gdp18.ecs.soton.ac.uk</bb-host>
+  	<bb-directory>C:/Users/Crispin/Desktop/Blackboard SDK</bb-directory>
+  </properties>
+  
+  <pluginRepositories>
+    <pluginRepository>
+        <!-- Local Blackboard repo -->
+        <id>bb</id>
+        <name>Blackboard Repository</name>
+        <url>file://${project.basedir}/repo</url>
+    </pluginRepository>
+  </pluginRepositories>
+  
+  <build>
+	<finalName>waterlock-blackboard</finalName>
+	<plugins>
+		<!-- The following task is called by executing 'mvn antrun:run' -->
+		<plugin>
+			<artifactId>maven-antrun-plugin</artifactId>
+			<version>1.5</version>
+			<dependencies>
+				<dependency>
+					<groupId>com.justplainwiley.eclipse</groupId>
+					<artifactId>b2deploy-task</artifactId>
+					<version>1.1</version>
+				</dependency>
+			</dependencies> 
+			<configuration>
+				<!-- The b2deploy task automatically deploys the -->
+				<!-- war file onto the development  server. -->
+				<target>
+					<taskdef name="b2deploy" classpathref="maven.plugin.classpath"
+						classname="org.oscelot.ant.B2DeployTask" />
+					<b2deploy localfilepath="${project.basedir}/target/waterlock-blackboard.war"
+						host="${bb-host}" courseorgavailable="true" clean="true" />
+				</target>
+				<!-- Requires "Starting Block 1.2.3 with Upload" installed on the server. -->
+				<!-- Download "bb-starting-block-123.war" from -->
+				<!-- https://behind.blackboard.com/s/developer/dlc/download.aspx?d=1335 -->
+			</configuration>
+		</plugin>
+	</plugins>
+  </build>
+  
+  <dependencies>
+  	<dependency>
+  		<groupId>southampton.ecs.gdp18</groupId>
+  		<artifactId>waterlock-blackboard-auth-java</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.auth0</groupId>
+  		<artifactId>java-jwt</artifactId>
+  		<version>2.1.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.fasterxml.jackson.core</groupId>
+  		<artifactId>jackson-databind</artifactId>
+  		<version>2.0.0</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-codec</groupId>
+  		<artifactId>commons-codec</artifactId>
+  		<version>1.4</version>
+  	</dependency>
+  	
+  	<!-- BLACKBOARD LIBRARIES -->
+  	<dependency>
+  		<groupId>blackboard.platform</groupId>
+  		<artifactId>bb-taglibs</artifactId>
+  		<version>${blackboard.platform-version}</version>
+  		<scope>system</scope>
+  		<systemPath>${bb-directory}/bb-taglibs.jar</systemPath>
+  	</dependency>
+  	<dependency>
+  		<groupId>blackboard.platform</groupId>
+  		<artifactId>bb-ws-context</artifactId>
+  		<version>${blackboard.platform-version}</version>
+  		<scope>system</scope>
+  		<systemPath>${bb-directory}/bb-ws-context.jar</systemPath>
+  	</dependency>
+  	<dependency>
+  		<groupId>blackboard.platform</groupId>
+  		<artifactId>bb-platform</artifactId>
+  		<version>${blackboard.platform-version}</version>
+  		<scope>system</scope>
+  		<systemPath>${bb-directory}/bb-platform.jar</systemPath>
+  	</dependency>
+  </dependencies>
+  
+</project>

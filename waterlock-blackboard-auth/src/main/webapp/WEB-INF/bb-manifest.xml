@@ -7,7 +7,7 @@
         <description value= "A plugin which allows users to sign into a Waterlock Module using an open Blackboard session."/>
         <version value= "1.0.0"/>
         <requires>
-            <bbversion value="9.0"/>
+            <bbversion value="9.1"/>
         </requires>
         <vendor>
             <id value="syn"/>
